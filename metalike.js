@@ -7,12 +7,20 @@
  */
 
 /**
- * Why am I doing this and not using jQuery?
+ * Dynamically create script tags to load external libraries
+ * - socket.io.js
  */
-var $$ = function () {
-  return document.querySelectorAll.apply(document, arguments)
-};
- 
+function loadSocketIo() {
+  var proto = document.createElement('script');
+  proto.type = 'text/javascript';
+  proto.src = 'http://' + hostname + '/socket.io/socket.io.js';
+  var dhead = document.getElementsByTagName('head')[0] || document.documentElement;
+  dhead.insertBefore(proto, dhead.firstChild);
+  initializeMetalike();
+}
+window.addEventListener("load", loadSocketIo());
+
+
 /**
  * Once libs are loaded, open a socket and do something trivial
  */
@@ -33,19 +41,12 @@ function initializeMetalike() {
 }
 
 /**
- * A test function that edits the innerHTML of the existing like button
+ * Why am I doing this and not using jQuery?
  */
-function insultLikers() {
-	var likes = $$('.like_link span.default_message, .cmnt_like_link span.default_message');
-	if (typeof likes != 'undefined') {
-    for (var like in likes) { 
-      if (likes[like].firstChild) {
-        likes[like].firstChild.nodeValue = "Like it, you big fat ape!"; 
-      }
-    }
-  }
-}
-
+var $$ = function () {
+  return document.querySelectorAll.apply(document, arguments)
+};
+ 
 /**
  * Create a metalike button
  */
@@ -68,7 +69,7 @@ function attachMetalikeButtons() {
   var count = 0;
   if (typeof likes != 'undefined') {
     for (var like in likes) {
-      count++;
+      //count++;
       likes[like].appendChild(createSeparator());
       likes[like].appendChild(createMetalikeButton());
     }
@@ -76,16 +77,4 @@ function attachMetalikeButtons() {
   }
 }
 
-/**
- * Dynamically create script tags to load external libraries
- * - socket.io.js
- */
-function loadSocketIo() {
-  var proto = document.createElement('script');
-  proto.type = 'text/javascript';
-  proto.src = 'http://' + hostname + '/socket.io/socket.io.js';
-  var dhead = document.getElementsByTagName('head')[0] || document.documentElement;
-  dhead.insertBefore(proto, dhead.firstChild);
-  initializeMetalike();
-}
-window.addEventListener("load", loadSocketIo());
+
