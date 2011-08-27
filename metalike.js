@@ -30,7 +30,7 @@ function openSocket() {
 function loadSocketIo() {
   var proto = document.createElement('script');
   proto.type = 'text/javascript';
-  proto.src = 'http://' + hostname + ':' + port + '/socket.io/socket.io.js';
+  proto.src = 'http://' + hostname + '/socket.io/socket.io.js';
   var dhead = document.getElementsByTagName('head')[0] || document.documentElement;
   dhead.insertBefore(proto, dhead.firstChild);
   openSocket();

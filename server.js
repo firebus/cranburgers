@@ -12,23 +12,35 @@ var http = require('http')
 , nko = require('nko')('B80ubnph0rdg+N4H')
 , url = require("url");
 
-
 var app = http.createServer(function (req, res) {
-  var path = url.parse(req.url).pathname;
+  var path = url.parse(req.url).pathname
   if (path == '/') {
     path = '/index.html';
   }
   console.log("Request for " + path + " received.");
-  fs.readFile(__dirname + path,
-  function (err, data) {
-    if (err) {
-      console.log('Error loading ' + path);
-      res.writeHead(500);
-      return res.end('Error loading ' + path);
-    }
+
+  if (path == '/index.html') {
+    var haml = require('hamljs')
+    , hostname = req.headers.host;
+    var options = {
+      locals: {
+        bookmarklet: "javascript:(function(){var varScript=document.createElement('SCRIPT');varScript.type='text/javascript';varScript.innerHTML='var hostname = \\\'" + hostname + "\\\';';document.getElementsByTagName('head')[0].appendChild(varScript);var metaScript=document.createElement('SCRIPT');metaScript.type='text/javascript';metaScript.src='http://" + hostname + "/metalike.js';document.getElementsByTagName('head')[0].appendChild(metaScript)})();",
+      }
+    };
     res.writeHead(200);
-    res.end(data);
-  });
+    res.end(haml.render(fs.readFileSync('index.haml'), options));
+  }
+  else {
+    fs.readFile(__dirname + path, function (err, data) {
+      if (err) {
+        console.log('Error loading ' + path);
+        res.writeHead(500);
+        return res.end('Error loading ' + path);
+      }
+      res.writeHead(200);
+      res.end(data);
+    });
+  }
 });
 
 var io = require('socket.io').listen(app);
