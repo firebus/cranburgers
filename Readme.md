@@ -1,9 +1,11 @@
 Metalike
 ========
 
+Node Knockout 2011 Entry
+
 #### Metalike, by Cranburgers
 
-- This project will allow you to like the fact that someone likes something on Facebook.
+- Metalike allows you to like the fact that someone likes something on Facebook.
 - Additionally you can like the fact that someone likes that someone likes something
 - Ad Infinitum
 
@@ -11,6 +13,11 @@ Metalike
 
 - Visit http://cranburgers.no.de and bookmark the bookmarklet
 - Visit http://facebook.com and click the bookmarklet
+
+### Dependencies
+
+- socket.io
+- haml.js
 
 ### Todo
 
