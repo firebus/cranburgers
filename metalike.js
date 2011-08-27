@@ -7,6 +7,13 @@
  */
 
 /**
+ * Why am I doing this and not using jQuery?
+ */
+var $$ = function () {
+  return document.querySelectorAll.apply(document, arguments)
+};
+
+/**
  * Dynamically create script tags to load external libraries
  * - socket.io.js
  */
@@ -41,18 +48,11 @@ function initializeMetalike() {
 }
 
 /**
- * Why am I doing this and not using jQuery?
- */
-var $$ = function () {
-  return document.querySelectorAll.apply(document, arguments)
-};
- 
-/**
  * Create a metalike button
  */
 function createMetalikeButton() {
   var metaButton = document.createElement('BUTTON');
-  metaButton.innerHTML = '<span>Like</span>';
+  metaButton.innerHTML = '<span>Meta-like</span>';
   metaButton.setAttribute('class', 'as_link');
   return metaButton;
 }
@@ -69,11 +69,13 @@ function attachMetalikeButtons() {
   var count = 0;
   if (typeof likes != 'undefined') {
     for (var like in likes) {
-      //count++;
-      likes[like].appendChild(createSeparator());
-      likes[like].appendChild(createMetalikeButton());
+      if (typeof likes[like].appendChild == 'function') {
+        count++;
+        likes[like].appendChild(createSeparator());
+        likes[like].appendChild(createMetalikeButton());
+      }
     }
-    //alert(count + ' likes');
+    alert(count + ' likes');
   }
 }
 

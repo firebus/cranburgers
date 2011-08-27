@@ -12,7 +12,8 @@
   "dependencies": {
     "nko": "~0.1.1",
     "socket.io": "~0.7.9",
-    "hamljs": "~0.5.1"
+    "hamljs": "~0.5.1",
+    "node-minify": "~0.3.1"
   },
   "devDependencies": {}
 }

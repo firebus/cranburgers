@@ -10,7 +10,17 @@
 var http = require('http')
 , fs = require('fs')
 , nko = require('nko')('B80ubnph0rdg+N4H')
-, url = require("url");
+, url = require('url')
+, compressor = require('node-minify');
+
+new compressor.minify({
+  type: 'uglifyjs',
+  fileIn: './bookmarklet.js',
+  fileOut: './bookmarklet-min.js',
+  callback: function(err){
+    console.log('minify errors: ' + err);
+  }
+});
 
 var app = http.createServer(function (req, res) {
   var path = url.parse(req.url).pathname
@@ -22,9 +32,13 @@ var app = http.createServer(function (req, res) {
   if (path == '/index.html') {
     var haml = require('hamljs')
     , hostname = req.headers.host;
+
+    var bookmarklet = fs.readFileSync(__dirname + '/bookmarklet-min.js').toString().replace(/HOSTNAME/g, hostname);
+    
     var options = {
       locals: {
-        bookmarklet: "javascript:(function(){var varScript=document.createElement('SCRIPT');varScript.type='text/javascript';varScript.innerHTML='var hostname = \\\'" + hostname + "\\\';';document.getElementsByTagName('head')[0].appendChild(varScript);var metaScript=document.createElement('SCRIPT');metaScript.type='text/javascript';metaScript.src='http://" + hostname + "/metalike.js';document.getElementsByTagName('head')[0].appendChild(metaScript)})();",
+        bookmarklet: 'javascript:' + bookmarklet,
+        //bookmarklet: "javascript:(function(){var varScript=document.createElement('SCRIPT');varScript.type='text/javascript';varScript.innerHTML='var hostname = \\\'" + hostname + "\\\';';document.getElementsByTagName('head')[0].appendChild(varScript);var metaScript=document.createElement('SCRIPT');metaScript.type='text/javascript';metaScript.src='http://" + hostname + "/metalike.js';document.getElementsByTagName('head')[0].appendChild(metaScript)})();",
       }
     };
     res.writeHead(200);
