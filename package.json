@@ -7,10 +7,11 @@
     "url": ""
   },
   "engines": {
-    "node": "~0.4.11"
+    "node": "~v0.4.11"
   },
   "dependencies": {
-    "nko": "~0.1.1"
+    "nko": "~0.1.1",
+    "socket.io": "~0.7.9"
   },
   "devDependencies": {}
 }
