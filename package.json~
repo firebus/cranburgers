@@ -1,0 +1,16 @@
+{
+  "author": "Russell Uman <russ@firebus.com> (http://twtitw.firebus.com)",
+  "name": "cranburgers",
+  "description": "Metalike NKO Awesome!",
+  "version": "0.0.0",
+  "repository": {
+    "url": ""
+  },
+  "engines": {
+    "node": "~v0.4.11"
+  },
+  "dependencies": {
+    "nko": "~0.1.1"
+  },
+  "devDependencies": {}
+}
