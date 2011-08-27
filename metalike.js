@@ -15,7 +15,7 @@ function openSocket() {
 	  window.setTimeout(openSocket, 100);
 	}
 	else {
-    var socket = io.connect();
+	  var socket = io.connect('http://localhost:7777');
     socket.on('news', function (data) {
       //console.log(data);
       alert("Hello, " + data['hello']);
@@ -30,10 +30,9 @@ function openSocket() {
 function loadSocketIo() {
   var proto = document.createElement('script');
   proto.type = 'text/javascript';
-  proto.src = '/socket.io/socket.io.js';
+  proto.src = 'http://' + hostname + ':' + port + '/socket.io/socket.io.js';
   var dhead = document.getElementsByTagName('head')[0] || document.documentElement;
   dhead.insertBefore(proto, dhead.firstChild);
   openSocket();
 }
 window.addEventListener("load", loadSocketIo());
-
