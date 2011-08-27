@@ -24,7 +24,7 @@ function initializeMetalike() {
 	  window.setTimeout(initializeMetalike, 100);
 	}
 	else {
-	  var socket = io.connect('http://localhost:7777');
+	  var socket = io.connect(hostname);
     socket.on('news', function (data) {
       //console.log(data);
       //alert("Hello, " + data['hello']);
