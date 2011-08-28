@@ -1,14 +1,16 @@
 %html
   %head
     %title Metalike, by Cranburgers
-    %link{ rel: "stylesheet", type: "text/css", href: "cranburgers.css" }
+    %link{ rel: 'stylesheet', type: 'text/css', href: 'cranburgers.css' }
+    %link{ rel: 'shortcut icon', href: 'favicon.ico', type: 'image/x-icon' }
 
   %body
     %div#content
       %h1 Metalike, by Cranburgers
+      %iframe{ src: 'http://nodeknockout.com/iframe/cranburgers', frameborder: 0, scrolling: 'no', allowtransparency: true, width: 115, height: 25 }
       %div.section
         %ul
-          %li Metalike is a bookmarklet at adds a meta 'Like' feature to Facebook.
+          %li Metalike is a bookmarklet that adds a meta 'Like' feature to Facebook.
           %li If someone has liked something, you can like that they liked it.
           %li You can also like that someone liked that someone liked something
           %li Ad infinitum
@@ -35,5 +37,6 @@
           %li Only tested on FF 6
           %li Only keeps track of one metalike per like (new metalikes overwrite old ones)
           %li Ad infinitum feature not yet implemented
-      %h2 Enjoy!
-      %iframe{ src: 'http://nodeknockout.com/iframe/cranburgers', frameborder: 0, scrolling: 'no', allowtransparency: true, width: 115, height: 25 }
+      %h2 More!
+      %div.section
+        %a{ href: 'https://github.com/firebus/cranburgers', title: 'github' } More info

@@ -14,3 +14,7 @@ body {
   width: 50%;
   margin: 80px auto;
 }
+
+iframe {
+  float: right;
+}
