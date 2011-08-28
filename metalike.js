@@ -45,25 +45,10 @@ function initializeMetalike() {
 	  window.socket = io.connect(hostname);
     socket.on('client', function (data) {
         console.log(data['message']);
-      socket.emit('server', { message: 'server message' });
+        socket.emit('server', { message: 'server message' });
     });
 	  attachMetalikeButtons();
   }
-}
-
-/**
- * Create a metalike button
- */
-function createMetalikeButton() {
-  var metaButton = document.createElement('A');
-  metaButton.innerHTML = '<span>Meta-like</span>';
-  //metaButton.setAttribute('class', 'as_link');
-  metaButton.setAttribute('onclick', "sendMetalike('metalike');");
-  return metaButton;
-}
-
-function createSeparator() {
-  return document.createTextNode(' · ');
 }
 
 /**
@@ -76,11 +61,13 @@ function attachMetalikeButtons() {
   if (typeof likes != 'undefined') {
     for (var like in likes) {
       if (typeof likes[like].appendChild == 'function') {
-        likeAnchors = likes[like].querySelectorAll("div div a");
-        if (onePersonLikes(likeAnchors)) {
-          count++;
+        if (onePersonLikes(likes[like])) {
+          var storyId = getStoryId(likes[like]);
+          var userId = getUserId(likes[like]);
+          var userName = getUserName(likes[like]);
           likes[like].appendChild(createSeparator());
-          likes[like].appendChild(createMetalikeButton());
+          likes[like].appendChild(createMetalikeButton(storyId, userId, userName));
+          count++;
         }
       }
     }
@@ -89,12 +76,44 @@ function attachMetalikeButtons() {
 }
 
 /**
+ * Get the username for a like
+ */
+function getUserName(like) {
+  var likeAnchor = like.querySelector('div div a');
+  var userName = likeAnchor.innerHTML;
+  return userName;
+}
+  
+/**
+ * Get the user id for a like
+ */
+function getUserId(like) {
+  var likeAnchor = like.querySelector('div div a');
+  var dataHovercard = likeAnchor.getAttribute('data-hovercard');
+  var userId = dataHovercard.match(/\?id=(.*)/)[1];
+  return userId;
+}  
+
+/**
+ * Calculate the story id for a like
+ */
+function getStoryId(like) {
+  // the form elemen is 4 hops up
+  // form -> ui -> li -> div -> div (like) -> a
+  // this is terrible of course - we should be iterating over the forms in the
+  // first place :)
+  var parentForm = like.parentNode.parentNode.parentNode.parentNode;
+  var idClasses = parentForm.getAttribute('class').split(' ');
+  var storyId = idClasses[0].split('_')[1];
+  return storyId;
+}
+
+/**
  * Test a list of a tags
  */
-function onePersonLikes(likeAnchors) {
-  console.log('onePersonLikes');
-  console.log('  ' + likeAnchors.length);
+function onePersonLikes(like) {
   var onlyOnePerson = true;
+  likeAnchors = like.querySelectorAll('div div a');
   for (var anchor in likeAnchors) {
     if (typeof likeAnchors[anchor] == 'object'
       && likeAnchors[anchor].getAttribute('title') == 'See people who like this item') {
@@ -105,9 +124,28 @@ function onePersonLikes(likeAnchors) {
 }
 
 /**
+ * Create a metalike button
+ */
+function createMetalikeButton(storyId, userId, userName) {
+  var metaButton = document.createElement('A');
+  metaButton.innerHTML = '<span>Meta-like</span>';
+  metaButton.setAttribute('onclick', "sendMetalike('" + storyId + "', '" + userId + "', '" + userName + "');");
+  metaButton.setAttribute('id', storyId + '_' + userId);
+  socket.emit('lookup', { storyId: storyId });
+  return metaButton;
+}
+
+/**
+ * Create a separator
+ */
+function createSeparator() {
+  return document.createTextNode(' · ');
+}
+
+/**
  * Communicate with the server socket
  */
-function sendMetalike(data) {
+function sendMetalike(storyId, userId, userName) {
   console.log('sendMetalike');
-  socket.emit('server', { message: 'metalike' });
+  socket.emit('metalike', { storyId: storyId, userId: userId, userName: userName });
 }

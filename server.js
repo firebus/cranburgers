@@ -41,11 +41,11 @@ httpClient.on('error', function(err) {
 var httpIo = require('socket.io').listen(httpApp);
 httpIo.sockets.on('connection', function (socket) {
   socket.emit('client', { message: 'client message' });
-  socket.on('server', function (data) {
-    httpClient.set('http', data['message'], redis.print);
-    httpClient.get('http', function(err, res) {
-        console.log('Redis: ' + res);
-    });
+  socket.on('metalike', function(data) {
+      saveMetalike(data);
+  });
+  socket.on('server', function(data) {
+      console.log(data['message']);
   });
 });
 httpApp.listen(port);
@@ -66,11 +66,14 @@ httpsClient.on('error', function(err) {
 var httpsIo = require('socket.io').listen(sslApp);
 httpsIo.sockets.on('connection', function (socket) {
   socket.emit('client', { message: 'client message' });
-  socket.on('server', function (data) {
-    httpsClient.set('https', data['message'], redis.print);
-    httpsClient.get('https', function(err, res) {
-        console.log('Redis: ' + res);
-    });
+  socket.on('server', function(data) {
+      console.log(data['message']);
+  });
+  socket.on('metalike', function(data) {
+      saveMetalike(data);
+  });
+  socket.on('lookup', function(data) {
+      lookupMetalike(data, this);
   });
 });
 sslApp.listen(sslPort);
@@ -125,3 +128,18 @@ function routeHandler (req, res) {
   }
 }
 
+function saveMetalike(data) {
+  console.log(data.storyId + ' ' + data.userId + ' ' + data.userName);
+  var metalike = { metalike: [
+    { uid: data.userId, username: data.userName, likes: [] },
+  ]};
+  var jsonMetalike = JSON.stringify(metalike);
+  console.log(jsonMetalike);
+  httpClient.set(data.storyId, jsonMetalike, redis.print);
+}
+
+function lookupMetalike(data, socket) {
+  httpClient.get(data['storyId'], function(err, res) {
+    console.log('Lookup: ' + res);
+  });
+}

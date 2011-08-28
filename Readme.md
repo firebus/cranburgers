@@ -28,10 +28,9 @@ Node Knockout 2011 Entry
 ### Todo
 
 - Display metalike buttons on modal "list of likes" window
-- Save metalike to datastore when metalike button is clicked
 - Display metalikes 
 - Support meta-metalikes
-- Greasemonky and other persistent plugins
+- Persistent plugin (greasemonkey etc.)
 - Un-metalike
 - Real-time updates
 
