@@ -45,6 +45,9 @@ httpIo.sockets.on('connection', function (socket) {
   socket.on('metalike', function(data) {
       saveMetalike(data);
   });
+  socket.on('lookup', function(data) {
+      lookupMetalike(data, this);
+  });
 });
 httpApp.listen(port);
 console.log('Server listening on ' + httpApp.address().port);
