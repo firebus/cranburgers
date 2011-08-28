@@ -16,8 +16,9 @@ Node Knockout 2011 Entry
 
 ### Dependencies
 
+- hamljs
+- node-minify
 - socket.io
-- haml.js
 
 ### Todo
 
@@ -29,7 +30,7 @@ Node Knockout 2011 Entry
   - Not yet
 - Support meta-metalikes
   - Not yet
-- Greasemonky and other plugins
+- Greasemonky and other persistent plugins
   - Not yet
 - Un-metalike
   - Not yet
