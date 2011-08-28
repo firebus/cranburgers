@@ -48,7 +48,7 @@ function initializeMetalike() {
         socket.emit('server', { message: 'server message' });
     });
     socket.on('metalike', function (data) {
-        displayMetaLike(data);
+        displayMetalike(data);
     });
 	  attachMetalikeButtons();
   }
@@ -67,15 +67,25 @@ function attachMetalikeButtons() {
         if (onePersonLikes(likes[like])) {
           var storyId = getStoryId(likes[like]);
           var userId = getUserId(likes[like]);
-          var userName = getUserName(likes[like]);
           likes[like].appendChild(createSeparator());
-          likes[like].appendChild(createMetalikeButton(storyId, userId, userName));
-          count++;
+          likes[like].appendChild(createMetalikeButton(storyId, userId)); count++;
         }
       }
     }
     console.log(count + ' likes');
   }
+}
+
+/**
+ * Get the name, edit URL of the current user)
+ */
+function getFbUser() {
+  var userElement = $$('a.fbxWelcomeBoxName')[0];
+  var fbUser = {
+    userId: userElement.getAttribute('href'),
+    userName: userElement.innerHTML,
+  }
+  return fbUser;
 }
 
 /**
@@ -132,7 +142,7 @@ function onePersonLikes(like) {
 function createMetalikeButton(storyId, userId, userName) {
   var metaButton = document.createElement('A');
   metaButton.innerHTML = '<span>Meta-like</span>';
-  metaButton.setAttribute('onclick', "sendMetalike('" + storyId + "', '" + userId + "', '" + userName + "');");
+  metaButton.setAttribute('onclick', "sendMetalike('" + storyId + "', '" + userId + "');");
   metaButton.setAttribute('id', 'mid-' + storyId + '-' + userId);
   socket.emit('lookup', { storyId: storyId });
   return metaButton;
@@ -148,15 +158,17 @@ function createSeparator() {
 /**
  * Communicate with the server socket
  */
-function sendMetalike(storyId, userId, userName) {
+function sendMetalike(storyId, userId) {
+  var fbUser = getFbUser();
   console.log('sendMetalike');
-  socket.emit('metalike', { storyId: storyId, userId: userId, userName: userName });
+  socket.emit('metalike', { storyId: storyId, userId: userId, userName: fbUser.userName });
+  displayMetalike({ storyId: storyId, userId: userId, metaUserName: fbUser.userName }); 
 }
 
 /**
  * If there's a metalike on an item, attach a div to that item
  */
-function displayMetaLike(data) {
+function displayMetalike(data) {
   var metalikeSelector = 'a#mid-' + data.storyId + '-' + data.userId;
   console.log(metalikeSelector);
   var metalikes = $$(metalikeSelector);
