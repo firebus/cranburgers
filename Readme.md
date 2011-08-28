@@ -28,7 +28,7 @@ Node Knockout 2011 Entry
 ### Todo
 
 - Display metalike buttons on modal "list of likes" window
-- Display metalikes 
+- Support multiple metalikes on a single item
 - Support meta-metalikes
 - Persistent plugin (greasemonkey etc.)
 - Un-metalike

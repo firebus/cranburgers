@@ -47,6 +47,9 @@ function initializeMetalike() {
         console.log(data['message']);
         socket.emit('server', { message: 'server message' });
     });
+    socket.on('metalike', function (data) {
+        displayMetaLike(data);
+    });
 	  attachMetalikeButtons();
   }
 }
@@ -130,7 +133,7 @@ function createMetalikeButton(storyId, userId, userName) {
   var metaButton = document.createElement('A');
   metaButton.innerHTML = '<span>Meta-like</span>';
   metaButton.setAttribute('onclick', "sendMetalike('" + storyId + "', '" + userId + "', '" + userName + "');");
-  metaButton.setAttribute('id', storyId + '_' + userId);
+  metaButton.setAttribute('id', 'mid-' + storyId + '-' + userId);
   socket.emit('lookup', { storyId: storyId });
   return metaButton;
 }
@@ -148,4 +151,26 @@ function createSeparator() {
 function sendMetalike(storyId, userId, userName) {
   console.log('sendMetalike');
   socket.emit('metalike', { storyId: storyId, userId: userId, userName: userName });
+}
+
+/**
+ * If there's a metalike on an item, attach a div to that item
+ */
+function displayMetaLike(data) {
+  var metalikeSelector = 'a#mid-' + data.storyId + '-' + data.userId;
+  console.log(metalikeSelector);
+  var metalikes = $$(metalikeSelector);
+  for (metalike in metalikes) {
+    if (typeof metalikes[metalike] == 'object') {
+      console.log('appending!');
+      var metalikeDiv = createMetalikeDiv(data.userId, data.metaUserName);
+      metalikes[metalike].appendChild(metalikeDiv);
+    }
+  }
+}
+
+function createMetalikeDiv(userId, userName) {
+  var metalikeDiv = document.createElement('DIV');
+  metalikeDiv.innerHTML = userName + ' metalikes this';
+  return metalikeDiv;
 }

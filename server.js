@@ -140,6 +140,13 @@ function saveMetalike(data) {
 
 function lookupMetalike(data, socket) {
   httpClient.get(data['storyId'], function(err, res) {
-    console.log('Lookup: ' + res);
+      if (res) {
+        var jsonMetalike = JSON.parse(res);
+        var storyId = data['storyId'];
+        var userId = jsonMetalike.metalike[0].uid;
+        var userName = jsonMetalike.metalike[0].username;
+        console.log('lookup: ' + [storyId, userId, userName].join(' '));
+        socket.emit('metalike', { storyId: storyId, userId: userId, metaUserId: userId , metaUserName: userName });
+      }
   });
 }
