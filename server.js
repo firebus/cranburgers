@@ -26,7 +26,9 @@ new compressor.minify({
   fileIn: './bookmarklet.js',
   fileOut: './bookmarklet-min.js',
   callback: function(err){
-    console.log('minify errors: ' + err);
+    if (err) {
+      console.log('Error: minify: ' + err);
+    }
   }
 });
 
@@ -40,12 +42,8 @@ httpClient.on('error', function(err) {
 // Instantiate sockets
 var httpIo = require('socket.io').listen(httpApp);
 httpIo.sockets.on('connection', function (socket) {
-  socket.emit('client', { message: 'client message' });
   socket.on('metalike', function(data) {
       saveMetalike(data);
-  });
-  socket.on('server', function(data) {
-      console.log(data['message']);
   });
 });
 httpApp.listen(port);
@@ -65,10 +63,6 @@ httpsClient.on('error', function(err) {
 // Instantiate sockets
 var httpsIo = require('socket.io').listen(sslApp);
 httpsIo.sockets.on('connection', function (socket) {
-  socket.emit('client', { message: 'client message' });
-  socket.on('server', function(data) {
-      console.log(data['message']);
-  });
   socket.on('metalike', function(data) {
       saveMetalike(data);
   });
@@ -129,12 +123,10 @@ function routeHandler (req, res) {
 }
 
 function saveMetalike(data) {
-  console.log(data.storyId + ' ' + data.userId + ' ' + data.userName);
   var metalike = { metalike: [
     { uid: data.userId, username: data.userName, likes: [] },
   ]};
   var jsonMetalike = JSON.stringify(metalike);
-  console.log(jsonMetalike);
   httpClient.set(data.storyId, jsonMetalike, redis.print);
 }
 
@@ -145,7 +137,6 @@ function lookupMetalike(data, socket) {
         var storyId = data['storyId'];
         var userId = jsonMetalike.metalike[0].uid;
         var userName = jsonMetalike.metalike[0].username;
-        console.log('lookup: ' + [storyId, userId, userName].join(' '));
         socket.emit('metalike', { storyId: storyId, userId: userId, metaUserId: userId , metaUserName: userName });
       }
   });

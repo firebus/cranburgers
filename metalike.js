@@ -20,8 +20,6 @@ var $$ = function () {
  * - socket.io.js
  */
 function setupMetaLike() {
-    console.log('setupMetaLike');
-
     var proto = document.createElement('script');
     proto.type = 'text/javascript';
     proto.src = 'http://' + hostname + '/socket.io/socket.io.js';
@@ -41,12 +39,7 @@ function initializeMetalike() {
 	  window.setTimeout(initializeMetalike, 100);
 	}
 	else {
-	  console.log('initializeMetalike');
 	  window.socket = io.connect(hostname);
-    socket.on('client', function (data) {
-        console.log(data['message']);
-        socket.emit('server', { message: 'server message' });
-    });
     socket.on('metalike', function (data) {
         displayMetalike(data);
     });
@@ -58,7 +51,6 @@ function initializeMetalike() {
  * Attach metalike button to all likes
  */
 function attachMetalikeButtons() {
-  console.log('attachMetalikeButtons');
   var likes = $$('li.uiUfiLike div.UIImageBlock_Content');
   var count = 0;
   if (typeof likes != 'undefined') {
@@ -72,7 +64,6 @@ function attachMetalikeButtons() {
         }
       }
     }
-    console.log(count + ' likes');
   }
 }
 
@@ -160,7 +151,6 @@ function createSeparator() {
  */
 function sendMetalike(storyId, userId) {
   var fbUser = getFbUser();
-  console.log('sendMetalike');
   socket.emit('metalike', { storyId: storyId, userId: userId, userName: fbUser.userName });
   displayMetalike({ storyId: storyId, userId: userId, metaUserName: fbUser.userName }); 
 }
@@ -170,11 +160,9 @@ function sendMetalike(storyId, userId) {
  */
 function displayMetalike(data) {
   var metalikeSelector = 'a#mid-' + data.storyId + '-' + data.userId;
-  console.log(metalikeSelector);
   var metalikes = $$(metalikeSelector);
   for (metalike in metalikes) {
     if (typeof metalikes[metalike] == 'object') {
-      console.log('appending!');
       var metalikeDiv = createMetalikeDiv(data.userId, data.metaUserName);
       metalikes[metalike].appendChild(metalikeDiv);
     }
