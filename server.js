@@ -9,10 +9,14 @@
 
 // Requires
 var http = require('http')
+, https = require('https')
 , fs = require('fs')
 , nko = require('nko')('B80ubnph0rdg+N4H')
 , url = require('url')
 , compressor = require('node-minify');
+
+port = process.env.NODE_ENV == 'production' ? 80 : 8080;
+sslPort = process.env.NODE_ENV == 'production' ? 443 : 8443;
 
 // Minify bookmarklet
 new compressor.minify({
@@ -24,21 +28,36 @@ new compressor.minify({
   }
 });
 
-// Instantiate http server
-var app = http.createServer(routeHandler);
-
+// Start http server
+var httpApp = http.createServer(routeHandler);
 // Instantiate sockets
-var io = require('socket.io').listen(app);
+var io = require('socket.io').listen(httpApp);
 io.sockets.on('connection', function (socket) {
   socket.emit('client', { message: 'client message' });
   socket.on('server', function (data) {
       console.log(data['message']);
   });
 });
+httpApp.listen(port);
+console.log('Server listening on ' + httpApp.address().port);
 
-// Start http server
-app.listen(parseInt(process.env.PORT) || 7777);
-console.log('Listening on ' + app.address().port);
+// Start ssl server
+var sslOptions = {
+  key: fs.readFileSync('server.key'),
+  cert: fs.readFileSync('server.crt'),
+};
+var sslApp = https.createServer(sslOptions, routeHandler);
+// Instantiate sockets
+var io = require('socket.io').listen(sslApp);
+io.sockets.on('connection', function (socket) {
+  socket.emit('client', { message: 'client message' });
+  socket.on('server', function (data) {
+      console.log(data['message']);
+  });
+});
+sslApp.listen(sslPort);
+console.log('Secure server listening on ' + sslApp.address().port);
+
 
 /**
  * A really simple router

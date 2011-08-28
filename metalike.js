@@ -36,12 +36,12 @@ window.addEventListener("load", setupMetaLike());
  * Once libs are loaded, open a socket and do something trivial
  */
 function initializeMetalike() {
-  console.log('initializeMetalike');
   if (typeof io == 'undefined') {
 	  // set to check every 100 milliseconds if the libary has loaded
 	  window.setTimeout(initializeMetalike, 100);
 	}
 	else {
+	  console.log('initializeMetalike');
 	  window.socket = io.connect(hostname);
     socket.on('client', function (data) {
         console.log(data['message']);
