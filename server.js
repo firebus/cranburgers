@@ -30,9 +30,9 @@ var app = http.createServer(routeHandler);
 // Instantiate sockets
 var io = require('socket.io').listen(app);
 io.sockets.on('connection', function (socket) {
-  socket.emit('news', { hello: 'world' });
-  socket.on('my other event', function (data) {
-    console.log(data);
+  socket.emit('client', { message: 'client message' });
+  socket.on('server', function (data) {
+      console.log(data['message']);
   });
 });
 

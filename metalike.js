@@ -6,6 +6,8 @@
  * @author: Russell Uman <russ@firebus.com>
  */
 
+window.metaLikeLoaded = false;
+ 
 /**
  * Why am I doing this and not using jQuery?
  */
@@ -17,34 +19,35 @@ var $$ = function () {
  * Dynamically create script tags to load external libraries
  * - socket.io.js
  */
-function loadSocketIo() {
-  var proto = document.createElement('script');
-  proto.type = 'text/javascript';
-  proto.src = 'http://' + hostname + '/socket.io/socket.io.js';
-  var dhead = document.getElementsByTagName('head')[0] || document.documentElement;
-  dhead.insertBefore(proto, dhead.firstChild);
-  initializeMetalike();
-}
-window.addEventListener("load", loadSocketIo());
+function setupMetaLike() {
+    console.log('setupMetaLike');
 
+    var proto = document.createElement('script');
+    proto.type = 'text/javascript';
+    proto.src = 'http://' + hostname + '/socket.io/socket.io.js';
+    var dhead = document.getElementsByTagName('head')[0] || document.documentElement;
+    dhead.insertBefore(proto, dhead.firstChild);
+
+    initializeMetalike();
+}
+window.addEventListener("load", setupMetaLike());
 
 /**
  * Once libs are loaded, open a socket and do something trivial
  */
 function initializeMetalike() {
-  attachMetalikeButtons();
-  
+  console.log('initializeMetalike');
   if (typeof io == 'undefined') {
 	  // set to check every 100 milliseconds if the libary has loaded
 	  window.setTimeout(initializeMetalike, 100);
 	}
 	else {
-	  var socket = io.connect(hostname);
-    socket.on('news', function (data) {
-      console.log(data);
-      alert("Hello, " + data['hello']);
-      socket.emit('my other event', { my: 'data' });
+	  window.socket = io.connect(hostname);
+    socket.on('client', function (data) {
+        console.log(data['message']);
+      socket.emit('server', { message: 'server message' });
     });
+	  attachMetalikeButtons();
   }
 }
 
@@ -67,6 +70,7 @@ function createSeparator() {
  * Attach metalike button to all likes
  */
 function attachMetalikeButtons() {
+  console.log('attachMetalikeButtons');
   var likes = $$('li.uiUfiLike div.UIImageBlock_Content');
   var count = 0;
   if (typeof likes != 'undefined') {
@@ -77,11 +81,11 @@ function attachMetalikeButtons() {
         likes[like].appendChild(createMetalikeButton());
       }
     }
-    //alert(count + ' likes');
+    console.log(count + ' likes');
   }
 }
 
 function sendMetalike(data) {
-  alert('sendMetalike');
-  socket.emit('metalike', { my: data });
+  console.log('sendMetalike');
+  socket.emit('server', { message: 'metalike' });
 }
