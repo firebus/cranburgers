@@ -76,15 +76,37 @@ function attachMetalikeButtons() {
   if (typeof likes != 'undefined') {
     for (var like in likes) {
       if (typeof likes[like].appendChild == 'function') {
-        count++;
-        likes[like].appendChild(createSeparator());
-        likes[like].appendChild(createMetalikeButton());
+        likeAnchors = likes[like].querySelectorAll("div div a");
+        if (onePersonLikes(likeAnchors)) {
+          count++;
+          likes[like].appendChild(createSeparator());
+          likes[like].appendChild(createMetalikeButton());
+        }
       }
     }
     console.log(count + ' likes');
   }
 }
 
+/**
+ * Test a list of a tags
+ */
+function onePersonLikes(likeAnchors) {
+  console.log('onePersonLikes');
+  console.log('  ' + likeAnchors.length);
+  var onlyOnePerson = true;
+  for (var anchor in likeAnchors) {
+    if (typeof likeAnchors[anchor] == 'object'
+      && likeAnchors[anchor].getAttribute('title') == 'See people who like this item') {
+      onlyOnePerson = false;
+    }
+  }
+  return onlyOnePerson;
+}
+
+/**
+ * Communicate with the server socket
+ */
 function sendMetalike(data) {
   console.log('sendMetalike');
   socket.emit('server', { message: 'metalike' });
