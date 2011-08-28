@@ -4,8 +4,10 @@
   %body
     %div.hello-world
       Hello, NKO
-      %br
-      Love, Cranburgers
+      %br Love, Cranburgers
     %div.bookmarklet
       Drag this bookmarklet into your browser bar:
       %a{ href: bookmarklet, title: 'Bookmarklet' } Metalike
+      %br If you use FB over SSL,
+      %a{ href: 'https://' + hostname, title: 'Reload' } Reload
+      %span this page over SSL and then bookmarklet

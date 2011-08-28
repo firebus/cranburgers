@@ -58,32 +58,42 @@ io.sockets.on('connection', function (socket) {
 sslApp.listen(sslPort);
 console.log('Secure server listening on ' + sslApp.address().port);
 
-
 /**
  * A really simple router
  */
 function routeHandler (req, res) {
   var path = url.parse(req.url).pathname
+  
+  // remap / to index.html
   if (path == '/') {
     path = '/index.html';
   }
   console.log("Request for " + path + " received.");
 
+  // route index.html through haml
   if (path == '/index.html') {
     var haml = require('hamljs')
     , hostname = req.headers.host;
+    
+    if (/^80/.test(this.address().port)) {
+      var protocol =  'http';
+    }
+    else {
+      var protocol = 'https';
+    }
 
-    var bookmarklet = fs.readFileSync(__dirname + '/bookmarklet-min.js').toString().replace(/HOSTNAME/g, hostname);
+    var bookmarklet = fs.readFileSync(__dirname + '/bookmarklet-min.js').toString().replace(/HOSTNAME/g, hostname).replace('PROTOCOL', protocol);
     
     var options = {
       locals: {
         bookmarklet: 'javascript:' + bookmarklet,
-        //bookmarklet: "javascript:(function(){var varScript=document.createElement('SCRIPT');varScript.type='text/javascript';varScript.innerHTML='var hostname = \\\'" + hostname + "\\\';';document.getElementsByTagName('head')[0].appendChild(varScript);var metaScript=document.createElement('SCRIPT');metaScript.type='text/javascript';metaScript.src='http://" + hostname + "/metalike.js';document.getElementsByTagName('head')[0].appendChild(metaScript)})();",
+        hostname: hostname,
       }
     };
     res.writeHead(200);
     res.end(haml.render(fs.readFileSync('index.haml'), options));
   }
+  // if not index.html try to make the path to a file
   else {
     fs.readFile(__dirname + path, function (err, data) {
       if (err) {
