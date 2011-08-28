@@ -1,14 +1,39 @@
 %html
   %head
-    %title Metalike by Cranburgers
+    %title Metalike, by Cranburgers
+    %link{ rel: "stylesheet", type: "text/css", href: "cranburgers.css" }
+
   %body
-    %div.hello-world
-      Hello, NKO
-      %br Love, Cranburgers
-    %div.bookmarklet
-      Drag this bookmarklet into your browser bar:
-      %a{ href: bookmarklet, title: 'Bookmarklet' } Metalike
-      %br If you use FB over SSL,
-      %a{ href: 'https://' + hostname, title: 'Reload' } Reload
-      %span this page over SSL and then bookmarklet
-    %iframe{ src: 'http://nodeknockout.com/iframe/cranburgers', frameborder: 0, scrolling: 'no', allowtransparency: true, width: 115, height: 25 }
+    %div#content
+      %h1 Metalike, by Cranburgers
+      %div.section
+        %ul
+          %li Metalike is a bookmarklet at adds a meta 'Like' feature to Facebook.
+          %li If someone has liked something, you can like that they liked it.
+          %li You can also like that someone liked that someone liked something
+          %li Ad infinitum
+      %h2 Bookmarklet
+      %a{ href: bookmarklet, title: 'Bookmarklet' } Metalike Bookmarklet
+      %h2 How to
+      %div.section
+        %ol
+          %li Drag the bookmarklet into your browser bar
+          %ul
+            %li If you use FB over SSL:
+            %a{ href: 'https://' + hostname, title: 'Reload' } Reload
+            %span this page over SSL and then bookmarklet
+            %li If loading this page over SSL doesn't work, then you will need to use http:// protocol on FB
+          %li Go to a facebook news feed
+          %li Click the bookmarket
+          %li Find and click a metalike button
+          %li If you come back to the page and click the bookmarklet again, your metalike will persist
+      %h2 How not to
+      %div.section
+        %ul
+          %li Only working on news feeds.
+          %li Metalike button only shows up when one person likes something ('X users like something' are not decorated since you cannot metalike a group.)
+          %li Only tested on FF 6
+          %li Only keeps track of one metalike per like (new metalikes overwrite old ones)
+          %li Ad infinitum feature not yet implemented
+      %h2 Enjoy!
+      %iframe{ src: 'http://nodeknockout.com/iframe/cranburgers', frameborder: 0, scrolling: 'no', allowtransparency: true, width: 115, height: 25 }
