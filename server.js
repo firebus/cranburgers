@@ -8,12 +8,14 @@
  */
 
 // Requires
-var http = require('http')
+var compressor = require('node-minify')
+, http = require('http')
 , https = require('https')
 , fs = require('fs')
 , nko = require('nko')('B80ubnph0rdg+N4H')
-, url = require('url')
-, compressor = require('node-minify');
+, redis = require('redis')
+, url = require('url'); 
+
 
 port = process.env.NODE_ENV == 'production' ? 80 : 8080;
 sslPort = process.env.NODE_ENV == 'production' ? 443 : 8443;
@@ -30,12 +32,20 @@ new compressor.minify({
 
 // Start http server
 var httpApp = http.createServer(routeHandler);
+// Redis client
+var httpClient = redis.createClient();
+httpClient.on('error', function(err) {
+    console.log('Error: redis: ' + err);
+});
 // Instantiate sockets
-var io = require('socket.io').listen(httpApp);
-io.sockets.on('connection', function (socket) {
+var httpIo = require('socket.io').listen(httpApp);
+httpIo.sockets.on('connection', function (socket) {
   socket.emit('client', { message: 'client message' });
   socket.on('server', function (data) {
-      console.log(data['message']);
+    httpClient.set('http', data['message'], redis.print);
+    httpClient.get('http', function(err, res) {
+        console.log('Redis: ' + res);
+    });
   });
 });
 httpApp.listen(port);
@@ -47,12 +57,20 @@ var sslOptions = {
   cert: fs.readFileSync('server.crt'),
 };
 var sslApp = https.createServer(sslOptions, routeHandler);
+// Redis client
+var httpsClient = redis.createClient();
+httpsClient.on('error', function(err) {
+    console.log('Error: redis: ' + err);
+});
 // Instantiate sockets
-var io = require('socket.io').listen(sslApp);
-io.sockets.on('connection', function (socket) {
+var httpsIo = require('socket.io').listen(sslApp);
+httpsIo.sockets.on('connection', function (socket) {
   socket.emit('client', { message: 'client message' });
   socket.on('server', function (data) {
-      console.log(data['message']);
+    httpsClient.set('https', data['message'], redis.print);
+    httpsClient.get('https', function(err, res) {
+        console.log('Redis: ' + res);
+    });
   });
 });
 sslApp.listen(sslPort);

@@ -18,6 +18,7 @@ Node Knockout 2011 Entry
 
 - hamljs
 - node-minify
+- redis
 - socket.io
 
 ### Todo
