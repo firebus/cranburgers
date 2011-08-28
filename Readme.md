@@ -21,20 +21,17 @@ Node Knockout 2011 Entry
 - redis
 - socket.io
 
+### Limitations
+
+- Joyent no.de instance does not support SSL, so does not work with facebook over SSL
+
 ### Todo
 
-- Display metalike button where appropriate
-  - Working on news feed, but not on other pages yet
+- Display metalike buttons on modal "list of likes" window
 - Save metalike to datastore when metalike button is clicked
-  - Not yet
 - Display metalikes 
-  - Not yet
 - Support meta-metalikes
-  - Not yet
 - Greasemonky and other persistent plugins
-  - Not yet
 - Un-metalike
-  - Not yet
 - Real-time updates
-  - Not yet
 
