@@ -41,8 +41,9 @@ function initializeMetalike() {
 	else {
 	  var socket = io.connect(hostname);
     socket.on('news', function (data) {
-      //console.log(data);
-      //alert("Hello, " + data['hello']);
+      console.log(data);
+      alert("Hello, " + data['hello']);
+      socket.emit('my other event', { my: 'data' });
     });
   }
 }
@@ -51,9 +52,10 @@ function initializeMetalike() {
  * Create a metalike button
  */
 function createMetalikeButton() {
-  var metaButton = document.createElement('BUTTON');
+  var metaButton = document.createElement('A');
   metaButton.innerHTML = '<span>Meta-like</span>';
-  metaButton.setAttribute('class', 'as_link');
+  //metaButton.setAttribute('class', 'as_link');
+  metaButton.setAttribute('onclick', "sendMetalike('metalike');");
   return metaButton;
 }
 
@@ -75,8 +77,11 @@ function attachMetalikeButtons() {
         likes[like].appendChild(createMetalikeButton());
       }
     }
-    alert(count + ' likes');
+    //alert(count + ' likes');
   }
 }
 
-
+function sendMetalike(data) {
+  alert('sendMetalike');
+  socket.emit('metalike', { my: data });
+}

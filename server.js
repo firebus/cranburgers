@@ -7,12 +7,14 @@
  * @author: Russell Uman <russ@firebus.com>
  */
 
+// Requires
 var http = require('http')
 , fs = require('fs')
 , nko = require('nko')('B80ubnph0rdg+N4H')
 , url = require('url')
 , compressor = require('node-minify');
 
+// Minify bookmarklet
 new compressor.minify({
   type: 'uglifyjs',
   fileIn: './bookmarklet.js',
@@ -22,7 +24,26 @@ new compressor.minify({
   }
 });
 
-var app = http.createServer(function (req, res) {
+// Instantiate http server
+var app = http.createServer(routeHandler);
+
+// Instantiate sockets
+var io = require('socket.io').listen(app);
+io.sockets.on('connection', function (socket) {
+  socket.emit('news', { hello: 'world' });
+  socket.on('my other event', function (data) {
+    console.log(data);
+  });
+});
+
+// Start http server
+app.listen(parseInt(process.env.PORT) || 7777);
+console.log('Listening on ' + app.address().port);
+
+/**
+ * A really simple router
+ */
+function routeHandler (req, res) {
   var path = url.parse(req.url).pathname
   if (path == '/') {
     path = '/index.html';
@@ -55,17 +76,5 @@ var app = http.createServer(function (req, res) {
       res.end(data);
     });
   }
-});
+}
 
-var io = require('socket.io').listen(app);
-
-app.listen(parseInt(process.env.PORT) || 7777);
-
-console.log('Listening on ' + app.address().port);
-
-io.sockets.on('connection', function (socket) {
-  socket.emit('news', { hello: 'Cranburgers' });
-  socket.on('my other event', function (data) {
-    console.log(data);
-  });
-});
